@@ -11,39 +11,38 @@ public class GetData {
             String data = scanner.nextLine();
             String[] arrayData = data.split(" ");
             if (arrayData.length == 6) {
+                scanner.close();
                 return arrayData;
             } else System.out.println("Данных не хватает, либо лишние!");
         }
     }
 
     public Data data(String[] strings) throws GenderException, DateException, PhoneException, FioException {
-        List<String> fio = new ArrayList<>();
-        HashMap dataMap = new HashMap();
+        String[] strData = new String[6];
         for (String item : strings) {
             if(isValidGender(item))
-                dataMap.put("gender", item);
+                strData[3] = item;
             else if(isValidDate(item))
-                dataMap.put("date", item);
+                strData[4] = item;
             else if (isValidNumber(item))
-                dataMap.put("phone", item);
-            else if(isValidFio(item))
-                fio.add(item);
+                strData[5] = item;
+            else if(isValidFio(item)){
+                if(strData[0] == null) strData[0] = item;
+                else if(strData[1] == null) strData[1] = item;
+                else strData[2] = item;
+            }
         }
 
-        if (!dataMap.containsKey("gender"))
-            throw new GenderException();
-        if (!dataMap.containsKey("date"))
-            throw new DateException();
-        if (!dataMap.containsKey("phone"))
-            throw new PhoneException();
-        if (fio.size() != 3)
+        if (strData[2] == null)
             throw new FioException();
+        if (strData[3] == null)
+            throw new GenderException();
+        if (strData[4] == null)
+            throw new DateException();
+        if (strData[5] == null)
+            throw new PhoneException();
 
-        Data data = new Data(fio.get(0),
-                fio.get(1), fio.get(2),
-                (String) dataMap.get("gender"),
-                (String) dataMap.get("date"),
-                (String) dataMap.get("phone"));
+        Data data = new Data(strData[0], strData[1], strData[2], strData[3], strData[4], strData[5]);
 
         return data;
     }
